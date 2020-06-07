@@ -5,7 +5,7 @@
 import os
 import operator
 import pandas as pd
-
+import matplotlib.pyplot as plt
 
 #DATA
 
@@ -121,31 +121,13 @@ for i, rows in cur_prod_sales.iterrows():
 
 
 
-#print('  1) Button-Down Shirt: $6,960.35')
-#print('  2) Super Soft Hoodie: $1,875.00')
-#print('  3) etc.')
-#
-
-
-
-
 #TODO: CHARTS
 
-
-#print('-----------------------')
-#print('MONTH: March 2018')
-#
-#print('-----------------------')
-#print('CRUNCHING THE DATA...')
-#
-#print('-----------------------')
-#print('TOTAL MONTHLY SALES: $12,000.71')
-#
-#print('-----------------------')
-#print('TOP SELLING PRODUCTS:')
-#print('  1) Button-Down Shirt: $6,960.35')
-#print('  2) Super Soft Hoodie: $1,875.00')
-#print('  3) etc.')
+plt.barh(cur_prod_sales.index, cur_prod_sales["sales price"], align='center')
+plt.gca().invert_yaxis()
+plt.xlabel(f"Total Sales in {cur_month} {cur_year} ($)")
+plt.ylabel("Product")
+plt.show()
 #
 #print('-----------------------')
 #print('VISUALIZING THE DATA...')
