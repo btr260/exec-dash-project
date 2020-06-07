@@ -123,6 +123,7 @@ for i, rows in cur_prod_sales.iterrows():
 
 #TODO: CHARTS
 
+fig, ax = plt.subplots(figsize=(15,5))
 plt.barh(cur_prod_sales.index, cur_prod_sales["sales price"], align='center')
 plt.gca().invert_yaxis()
 plt.xlabel(f"Total Sales in {cur_month} {cur_year} ($)")
