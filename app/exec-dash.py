@@ -6,6 +6,7 @@ import os
 import operator
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.ticker as tck
 
 #DATA
 
@@ -120,16 +121,17 @@ for i, rows in cur_prod_sales.iterrows():
         print(f"  {rank}) {i}: {to_usd(rows['sales price'])}")
 
 
-
-#TODO: CHARTS
+print('-----------------------')
+print('VISUALIZING THE DATA...')
 
 fig, ax = plt.subplots(figsize=(15,5))
 plt.barh(cur_prod_sales.index, cur_prod_sales["sales price"], align='center')
 plt.gca().invert_yaxis()
 plt.xlabel(f"Total Sales in {cur_month} {cur_year} ($)")
 plt.ylabel("Product")
+
+# SOURCE: https://stackoverflow.com/questions/25973581/how-do-i-format-axis-number-format-to-thousands-with-a-comma-in-matplotlib
+ax.get_xaxis().set_major_formatter(
+    tck.FuncFormatter(lambda x, p: format(int(x), ',')))
+
 plt.show()
-#
-#print('-----------------------')
-#print('VISUALIZING THE DATA...')
-#
