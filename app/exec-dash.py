@@ -62,8 +62,8 @@ def month_num(month):
 
 #TODO: FILE SELECTION
 
-cur_month = 'April'
-cur_year = '2019'
+cur_month = 'March'
+cur_year = '2018'
     #TODO: user input cur_month and cur_year
 cur_ym = cur_year + month_num(cur_month)
 cur_csvname = f'sales-{cur_ym}.csv'
@@ -73,6 +73,50 @@ print(os.path.isfile(cur_filepath))
 
 
 #TODO: CALCULATIONS ON SELECTED FILE
+
+cur_sales=pd.read_csv(cur_filepath)
+#print(cur_sales)
+#           date            product  unit price  units sold  sales price
+#0    2019-04-01        Khaki Pants       89.00           1        89.00
+#1    2019-04-01  Button-Down Shirt       65.05           1        65.05
+#2    2019-04-01   Vintage Logo Tee       15.95           2        31.90
+#3    2019-04-01       Sticker Pack        4.50           1         4.50
+#4    2019-04-02        Khaki Pants       89.00           1        89.00
+#..          ...                ...         ...         ...          ...
+#110  2019-04-29        Khaki Pants       89.00           1        89.00
+#111  2019-04-29   Vintage Logo Tee       15.95           2        31.90
+#112  2019-04-30        Khaki Pants       89.00           1        89.00
+#113  2019-04-30  Button-Down Shirt       65.05           3       195.15
+#114  2019-04-30   Vintage Logo Tee       15.95           3        47.85
+
+#print(type(cur_sales))  # > <class 'pandas.core.frame.DataFrame'>
+
+cur_total_sales=cur_sales["sales price"].sum()
+#print(cur_total_sales)
+cur_prod_sales = cur_sales.groupby(['product']).sum()
+#print(cur_prod_sales)
+cur_prod_sales=cur_prod_sales.sort_values(by=['sales price'],ascending=False)
+#print(cur_prod_sales)
+
+
+print('-----------------------')
+print(f'MONTH: {cur_month} {cur_year}')
+
+print('-----------------------')
+print('CRUNCHING THE DATA...')
+
+print('-----------------------')
+print(f'TOTAL MONTHLY SALES: {to_usd(cur_total_sales)}')
+#
+#print('-----------------------')
+#print('TOP SELLING PRODUCTS:')
+#print('  1) Button-Down Shirt: $6,960.35')
+#print('  2) Super Soft Hoodie: $1,875.00')
+#print('  3) etc.')
+#
+
+
+
 
 #TODO: CHARTS
 
