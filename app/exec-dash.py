@@ -96,7 +96,7 @@ cur_total_sales=cur_sales["sales price"].sum()
 cur_prod_sales = cur_sales.groupby(['product']).sum()
 #print(cur_prod_sales)
 cur_prod_sales=cur_prod_sales.sort_values(by=['sales price'],ascending=False)
-#print(cur_prod_sales)
+print(cur_prod_sales)
 
 
 print('-----------------------')
@@ -107,9 +107,20 @@ print('CRUNCHING THE DATA...')
 
 print('-----------------------')
 print(f'TOTAL MONTHLY SALES: {to_usd(cur_total_sales)}')
-#
-#print('-----------------------')
-#print('TOP SELLING PRODUCTS:')
+
+user_top = 3 #TODO: let user specify number of products
+
+print('-----------------------')
+print(f"TOP {user_top} SELLING PRODUCTS:")
+
+rank=0
+for i, rows in cur_prod_sales.iterrows():
+    rank+=1
+    if rank <= user_top:
+        print(f"  {rank}) {i}: {to_usd(rows['sales price'])}")
+
+
+
 #print('  1) Button-Down Shirt: $6,960.35')
 #print('  2) Super Soft Hoodie: $1,875.00')
 #print('  3) etc.')
