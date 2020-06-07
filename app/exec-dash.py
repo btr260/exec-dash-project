@@ -127,8 +127,8 @@ print('VISUALIZING THE DATA...')
 fig, ax = plt.subplots(figsize=(15,5))
 plt.barh(cur_prod_sales.index, cur_prod_sales["sales price"], align='center')
 plt.gca().invert_yaxis()
-plt.xlabel(f"Total Sales in {cur_month} {cur_year} ($)")
-plt.ylabel("Product")
+plt.xlabel(f"Total Sales in {cur_month} {cur_year} ($)",fontweight='bold', fontsize='12', horizontalalignment='center')
+plt.ylabel("Product", fontweight='bold',fontsize='12',verticalalignment='center')
 
 # SOURCE: https://stackoverflow.com/questions/25973581/how-do-i-format-axis-number-format-to-thousands-with-a-comma-in-matplotlib
 ax.get_xaxis().set_major_formatter(
