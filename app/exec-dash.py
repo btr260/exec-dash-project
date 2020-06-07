@@ -127,11 +127,17 @@ print('VISUALIZING THE DATA...')
 fig, ax = plt.subplots(figsize=(15,5))
 plt.barh(cur_prod_sales.index, cur_prod_sales["sales price"], align='center')
 plt.gca().invert_yaxis()
-plt.xlabel(f"Total Sales in {cur_month} {cur_year} ($)",fontweight='bold', fontsize='12', horizontalalignment='center')
-plt.ylabel("Product", fontweight='bold',fontsize='12',verticalalignment='center')
+plt.xlabel(f"Total Sales in {cur_month} {cur_year} ($)",fontname='times new roman',fontweight='bold', fontsize='12', horizontalalignment='center')
+plt.ylabel("Product", fontname='times new roman', fontweight='bold',fontsize='12', verticalalignment='center')
 plt.grid(which='major',axis='x',linestyle="--")
-# SOURCE: https://stackoverflow.com/questions/25973581/how-do-i-format-axis-number-format-to-thousands-with-a-comma-in-matplotlib
-ax.get_xaxis().set_major_formatter(
-    tck.FuncFormatter(lambda x, p: format(int(x), ',')))
 
+ax.get_xaxis().set_major_formatter(tck.FuncFormatter(lambda x, p: format(int(x), ',')))    # SOURCE: https://stackoverflow.com/questions/25973581/how-do-i-format-axis-number-format-to-thousands-with-a-comma-in-matplotlib
+
+for tick in ax.get_xticklabels():
+    tick.set_fontname('times new roman')
+
+for tick in ax.get_yticklabels():
+    tick.set_fontname('times new roman')
+
+plt.title(f"Monthly Sales by Product\n{cur_month} {cur_year}",fontname='times new roman', fontweight='bold', fontsize='16')
 plt.show()
