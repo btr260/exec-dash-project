@@ -67,7 +67,7 @@ def month_num(month):
 #Create list of files
 data_filepath = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'data')
 data_files = os.listdir(data_filepath)
-print(data_files)
+#print(data_files)
 
 #initialize dataframe
 master_data = pd.DataFrame()
@@ -94,7 +94,7 @@ for dfile in data_files:
 master_data['year']=master_data['date'].str.split('-').str[0]
 master_data['month'] = master_data['date'].str.split('-').str[1]
 master_data['yearmon']=master_data['year']+master_data['month']
-print(master_data)
+#print(master_data)
 #date            product  unit price  ...  sales price  year  month
 #0     2019-04-01        Khaki Pants       89.00  ...        89.00  2019      4
 #1     2019-04-01  Button-Down Shirt       65.05  ...        65.05  2019      4
@@ -153,15 +153,15 @@ print(master_data)
 
 #TODO: FILE SELECTION
 
-cur_month = 'February'
-num_year=2019
+cur_month = input("Please input month (e.g. 'February'): ")
+num_year=input("Please input year (e.g. 2019): ")
 cur_year = str(num_year)
     #TODO: user input cur_month and cur_year
 cur_ym = cur_year + month_num(cur_month)
 cur_csvname = f'sales-{cur_ym}.csv'
 cur_filepath = os.path.join(data_filepath, cur_csvname)
-#print(cur_filepath)
-#print(os.path.isfile(cur_filepath))
+print(cur_filepath)
+print(os.path.isfile(cur_filepath))
 
 
 #TODO: CALCULATIONS ON SELECTED FILE
