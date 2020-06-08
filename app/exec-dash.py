@@ -158,15 +158,15 @@ num_year=input("Please input year (e.g. 2019): ")
 cur_year = str(num_year)
     #TODO: user input cur_month and cur_year
 cur_ym = cur_year + month_num(cur_month)
-cur_csvname = f'sales-{cur_ym}.csv'
-cur_filepath = os.path.join(data_filepath, cur_csvname)
-print(cur_filepath)
-print(os.path.isfile(cur_filepath))
+#cur_csvname = f'sales-{cur_ym}.csv'
+#cur_filepath = os.path.join(data_filepath, cur_csvname)
+#print(cur_filepath)
+#print(os.path.isfile(cur_filepath))
 
 
 #TODO: CALCULATIONS ON SELECTED FILE
 
-cur_sales=pd.read_csv(cur_filepath)
+#cur_sales=pd.read_csv(cur_filepath)
 #print(cur_sales)
 #           date            product  unit price  units sold  sales price
 #0    2019-04-01        Khaki Pants       89.00           1        89.00
@@ -182,6 +182,14 @@ cur_sales=pd.read_csv(cur_filepath)
 #114  2019-04-30   Vintage Logo Tee       15.95           3        47.85
 
 #print(type(cur_sales))  # > <class 'pandas.core.frame.DataFrame'>
+
+month_prod_sales=master_data.groupby(['yearmon','product']).sum()
+print(month_prod_sales)
+
+month_total_sales = master_data.groupby(['yearmon']).sum()
+print(month_total_sales)
+
+breakpoint()
 
 cur_total_sales=cur_sales["sales price"].sum()
 #print(cur_total_sales)
