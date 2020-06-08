@@ -7,6 +7,9 @@ import operator
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.ticker as tck
+import PySimpleGUI as sg
+
+
 
 #DATA
 
@@ -61,16 +64,80 @@ def month_num(month):
 
 #CODE
 
+#Create list of files
+data_filepath = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'data')
+data_files = os.listdir(data_filepath)
+print(data_files)
+
+#initialize dataframe
+master_data = pd.DataFrame()
+
+#import all data
+for dfile in data_files:
+    temp = pd.read_csv(os.path.join(data_filepath, dfile))
+    master_data=temp.append(master_data,ignore_index=True) # https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.append.html
+
+#print(master_data)
+#date            product  unit price  units sold  sales price
+#0     2019-04-01        Khaki Pants       89.00           1        89.00
+#1     2019-04-01  Button-Down Shirt       65.05           1        65.05
+#2     2019-04-01   Vintage Logo Tee       15.95           2        31.90
+#3     2019-04-01       Sticker Pack        4.50           1         4.50
+#4     2019-04-02        Khaki Pants       89.00           1        89.00
+#...          ...                ...         ...         ...          ...
+#2342  2017-10-30        Khaki Pants       89.00           1        89.00
+#2343  2017-10-30  Button-Down Shirt       65.05           4       260.20
+#2344  2017-10-30   Vintage Logo Tee       15.95           1        15.95
+#2345  2017-10-30       Sticker Pack        4.50           3        13.50
+#2346  2017-10-31       Sticker Pack        4.50           2         9.00
+
+
+
+breakpoint()
+
+#sg.ChangeLookAndFeel("GreenTan")
+#
+#layout = [
+#    [sg.Text("Welcome to your monthly sales report!",
+#             size=(30, 1), font=("Helvetica", 25))],
+#    [sg.Text("Please select the month of interest:")],
+#    #[sg.InputText("This is my text")],
+#    #[sg.Checkbox("My first checkbox!"), sg.Checkbox(
+#    #    "My second checkbox!", default=True)],
+#    #[sg.Radio("My first Radio!     ", "RADIO1", default=True),
+#    # sg.Radio("My second Radio!", "RADIO1")],
+#    #[sg.Multiline(default_text="This is the default Text should you decide not to type anything", size=(35, 3)),
+#    # sg.Multiline(default_text="A second multi-line", size=(35, 3))],
+#    #[sg.InputCombo(("Combobox 1", "Combobox 2"), size=(20, 3)),
+#    # sg.Slider(range=(1, 100), orientation="h", size=(34, 20), default_value=85)],
+#    [sg.Listbox(values=("Listbox 1", "Listbox 2", "Listbox 3"), size=(30, 3))],
+#    [sg.Text("_" * 80)],
+#    #[sg.Text("Choose A Folder", size=(35, 1))],
+#    #[sg.Text("Your Folder", size=(15, 1), auto_size_text=False, justification="right"),
+#    # sg.InputText("Default Folder"), sg.FolderBrowse()],
+#    [sg.Submit(), sg.Cancel()]
+#]
+#
+#window = sg.Window("Monthly sales report",
+#                   default_element_size=(40, 1)).Layout(layout)
+#button, values = window.Read()
+#sg.Popup(button, values)
+
+
+
+
+
 #TODO: FILE SELECTION
 
-cur_month = 'March'
-cur_year = '2018'
+cur_month = 'February'
+num_year=2019
+cur_year = str(num_year)
     #TODO: user input cur_month and cur_year
 cur_ym = cur_year + month_num(cur_month)
 cur_csvname = f'sales-{cur_ym}.csv'
-cur_filepath = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'data', cur_csvname)
-print(cur_filepath)
-print(os.path.isfile(cur_filepath))
+cur_filepath = os.path.join(data_filepath, cur_csvname)
+#print(cur_filepath)
+#print(os.path.isfile(cur_filepath))
 
 
 #TODO: CALCULATIONS ON SELECTED FILE
@@ -97,7 +164,7 @@ cur_total_sales=cur_sales["sales price"].sum()
 cur_prod_sales = cur_sales.groupby(['product']).sum()
 #print(cur_prod_sales)
 cur_prod_sales=cur_prod_sales.sort_values(by=['sales price'],ascending=False)
-print(cur_prod_sales)
+#print(cur_prod_sales)
 
 
 print('-----------------------')
