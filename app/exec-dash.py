@@ -91,11 +91,33 @@ for dfile in data_files:
 #2345  2017-10-30       Sticker Pack        4.50           3        13.50
 #2346  2017-10-31       Sticker Pack        4.50           2         9.00
 
-master_data['year']=pd.to_numeric(master_data['date'].str.split('-').str[0],downcast='integer') #to_numeric: https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.to_numeric.html
-master_data['month']=pd.to_numeric(master_data['date'].str.split('-').str[1],downcast='integer')
+master_data['year']=master_data['date'].str.split('-').str[0]
+master_data['month'] = master_data['date'].str.split('-').str[1]
+master_data['yearmon']=master_data['year']+master_data['month']
 print(master_data)
-print(master_data.dtypes)
-breakpoint()
+#date            product  unit price  ...  sales price  year  month
+#0     2019-04-01        Khaki Pants       89.00  ...        89.00  2019      4
+#1     2019-04-01  Button-Down Shirt       65.05  ...        65.05  2019      4
+#2     2019-04-01   Vintage Logo Tee       15.95  ...        31.90  2019      4
+#3     2019-04-01       Sticker Pack        4.50  ...         4.50  2019      4
+#4     2019-04-02        Khaki Pants       89.00  ...        89.00  2019      4
+#...          ...                ...         ...  ...          ...   ...    ...
+#2342  2017-10-30        Khaki Pants       89.00  ...        89.00  2017     10
+#2343  2017-10-30  Button-Down Shirt       65.05  ...       260.20  2017     10
+#2344  2017-10-30   Vintage Logo Tee       15.95  ...        15.95  2017     10
+#2345  2017-10-30       Sticker Pack        4.50  ...        13.50  2017     10
+#2346  2017-10-31       Sticker Pack        4.50  ...         9.00  2017     10
+
+#print(master_data.dtypes)
+#date            object
+#product         object
+#unit price     float64
+#units sold       int64
+#sales price    float64
+#year             int16
+#month             int8
+
+
 
 #sg.ChangeLookAndFeel("GreenTan")
 #
