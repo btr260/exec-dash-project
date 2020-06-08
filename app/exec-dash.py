@@ -91,8 +91,10 @@ for dfile in data_files:
 #2345  2017-10-30       Sticker Pack        4.50           3        13.50
 #2346  2017-10-31       Sticker Pack        4.50           2         9.00
 
-
-
+master_data['year']=pd.to_numeric(master_data['date'].str.split('-').str[0],downcast='integer') #to_numeric: https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.to_numeric.html
+master_data['month']=pd.to_numeric(master_data['date'].str.split('-').str[1],downcast='integer')
+print(master_data)
+print(master_data.dtypes)
 breakpoint()
 
 #sg.ChangeLookAndFeel("GreenTan")
