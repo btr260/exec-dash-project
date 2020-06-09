@@ -268,11 +268,34 @@ print(ltm)
 #Subset master data for current month and previous twelve months
 cur_month_sales=master_data[master_data['yearmon']==cur_ym]
 
-ltm_month_sales = master_data[(master_data['yearmon num'] <= int(ltm[3]+ltm[2])) & (master_data['yearmon num'] >= int(ltm[1]+ltm[0]))]
+ltm_sales = master_data[(master_data['yearmon num'] <= int(ltm[3]+ltm[2])) & (master_data['yearmon num'] >= int(ltm[1]+ltm[0]))]
 
 
-print(cur_month_sales)
-print(ltm_month_sales)
+#print(cur_month_sales)
+#print(ltm_month_sales)
+
+cur_total_sales=cur_month_sales['sales price'].sum()
+print('current sales total')
+print(cur_total_sales)
+
+cur_prod_sales = cur_month_sales.groupby('product')['sales price'].sum()
+print('current prod sales')
+print(cur_prod_sales)
+
+ltm_total_sales = ltm_sales.groupby('yearmon')['sales price'].sum()
+print('ltm total sales')
+print(ltm_total_sales)
+
+ltm_avg_sales=ltm_total_sales.mean()
+print('ltm avg sales')
+print(ltm_avg_sales)
+
+ltm_prod_sales=ltm_sales.groupby(['yearmon','product'])['sales price'].sum()
+print('ltm prod sales')
+print(ltm_prod_sales)
+
+ltm_avg_prod_sales=ltm_prod_sales.groupby(level='product').mean()
+print(ltm_avg_prod_sales)
 
 breakpoint()
 
