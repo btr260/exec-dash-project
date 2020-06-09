@@ -275,31 +275,29 @@ ltm_sales = master_data[(master_data['yearmon num'] <= int(ltm[3]+ltm[2])) & (ma
 #print(ltm_month_sales)
 
 cur_total_sales=cur_month_sales['sales price'].sum()
-print('current sales total')
-print(cur_total_sales)
+#print('current sales total')
+#print(cur_total_sales)
 
 cur_prod_sales = cur_month_sales.groupby('product')['sales price'].sum()
 cur_prod_sales=cur_prod_sales.sort_values(ascending=False)
-print('current prod sales')
+#print('current prod sales')
 print(cur_prod_sales)
 
 ltm_total_sales = ltm_sales.groupby('yearmon')['sales price'].sum()
-print('ltm total sales')
-print(ltm_total_sales)
+#print('ltm total sales')
+#print(ltm_total_sales)
 
 ltm_avg_sales=ltm_total_sales.mean()
-print('ltm avg sales')
-print(ltm_avg_sales)
+#print('ltm avg sales')
+#print(ltm_avg_sales)
 
 ltm_prod_sales=ltm_sales.groupby(['yearmon','product'])['sales price'].sum()
-print('ltm prod sales')
-print(ltm_prod_sales)
+#print('ltm prod sales')
+#print(ltm_prod_sales)
 
 ltm_avg_prod_sales=ltm_prod_sales.groupby(level='product').mean()
 ltm_avg_prod_sales = ltm_avg_prod_sales.sort_values(ascending=False)
-print(ltm_avg_prod_sales)
-
-breakpoint()
+#print(ltm_avg_prod_sales)
 
 
 print('-----------------------')
@@ -317,10 +315,10 @@ print('-----------------------')
 print(f"TOP {user_top} SELLING PRODUCTS:")
 
 rank=0
-for i, rows in cur_prod_sales.iterrows():
+for i, rows in cur_prod_sales.iteritems():
     rank+=1
     if rank <= user_top:
-        print(f"  {rank}) {i}: {to_usd(rows['sales price'])}")
+        print(f"  {rank}) {i}: {to_usd(rows)}")
 
 
 print('-----------------------')
@@ -328,7 +326,7 @@ print('VISUALIZING THE DATA...')
 
 fig, ax = plt.subplots(figsize=(15,5))
 
-plt.barh(cur_prod_sales.index, cur_prod_sales["sales price"], align='center')
+plt.barh(cur_prod_sales.index, cur_prod_sales, align='center')
 
 #Source for y axis inversion: https://stackoverflow.com/questions/34076177/matplotlib-horizontal-bar-chart-barh-is-upside-down
 plt.gca().invert_yaxis()
