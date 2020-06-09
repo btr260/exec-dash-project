@@ -257,16 +257,24 @@ cur_month_int=int(month_num(cur_month))
 cur_year_int=int(cur_year)
 cur_ym_int=int(cur_ym)
 
-ytm=prev_year(month_num(cur_month),cur_year,data_pds[0])
-print(ytm)
-
-breakpoint()
+ltm=prev_year(month_num(cur_month),cur_year,data_pds[0])
+print(ltm)
 
 #cur_csvname = f'sales-{cur_ym}.csv'
 #cur_filepath = os.path.join(data_filepath, cur_csvname)
 #print(cur_filepath)
 #print(os.path.isfile(cur_filepath))
 
+#Subset master data for current month and previous twelve months
+cur_month_sales=master_data[master_data['yearmon']==cur_ym]
+
+ltm_month_sales = master_data[(master_data['yearmon num'] <= int(ltm[3]+ltm[2])) & (master_data['yearmon num'] >= int(ltm[1]+ltm[0]))]
+
+
+print(cur_month_sales)
+print(ltm_month_sales)
+
+breakpoint()
 
 #TODO: CALCULATIONS ON SELECTED FILE
 
