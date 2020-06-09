@@ -226,13 +226,13 @@ else:
     print('Thank you for your entry.\nGenerating sales report now...')
     print('-------------------------')
 
-breakpoint()
-
-cur_month = input("Please input month (e.g. 'February'): ")
-num_year=input("Please input year (e.g. 2019): ")
-cur_year = str(num_year)
-    #TODO: user input cur_month and cur_year
+cur_month = my_input[:my_input.find(' ')]
+cur_year=my_input[-4:]
 cur_ym = cur_year + month_num(cur_month)
+cur_ym_num=int(cur_ym)
+cur_year_int=int(cur_year)
+cur_month_int=int(cur_month)
+
 #cur_csvname = f'sales-{cur_ym}.csv'
 #cur_filepath = os.path.join(data_filepath, cur_csvname)
 #print(cur_filepath)
@@ -260,13 +260,14 @@ cur_ym = cur_year + month_num(cur_month)
 
 month_prod_sales=master_data.groupby(['yearmon','product']).sum()
 print(month_prod_sales)
+print(month_prod_sales.index)
 
 month_total_sales = master_data.groupby(['yearmon']).sum()
 print(month_total_sales)
 
 breakpoint()
 
-cur_total_sales=cur_sales["sales price"].sum()
+cur_total_sales=month_total_sales['sales price'].loc[cur_ym]
 #print(cur_total_sales)
 cur_prod_sales = cur_sales.groupby(['product']).sum()
 #print(cur_prod_sales)
