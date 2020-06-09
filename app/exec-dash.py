@@ -279,6 +279,7 @@ print('current sales total')
 print(cur_total_sales)
 
 cur_prod_sales = cur_month_sales.groupby('product')['sales price'].sum()
+cur_prod_sales=cur_prod_sales.sort_values(ascending=False)
 print('current prod sales')
 print(cur_prod_sales)
 
@@ -295,44 +296,10 @@ print('ltm prod sales')
 print(ltm_prod_sales)
 
 ltm_avg_prod_sales=ltm_prod_sales.groupby(level='product').mean()
+ltm_avg_prod_sales = ltm_avg_prod_sales.sort_values(ascending=False)
 print(ltm_avg_prod_sales)
 
 breakpoint()
-
-#TODO: CALCULATIONS ON SELECTED FILE
-
-#cur_sales=pd.read_csv(cur_filepath)
-#print(cur_sales)
-#           date            product  unit price  units sold  sales price
-#0    2019-04-01        Khaki Pants       89.00           1        89.00
-#1    2019-04-01  Button-Down Shirt       65.05           1        65.05
-#2    2019-04-01   Vintage Logo Tee       15.95           2        31.90
-#3    2019-04-01       Sticker Pack        4.50           1         4.50
-#4    2019-04-02        Khaki Pants       89.00           1        89.00
-#..          ...                ...         ...         ...          ...
-#110  2019-04-29        Khaki Pants       89.00           1        89.00
-#111  2019-04-29   Vintage Logo Tee       15.95           2        31.90
-#112  2019-04-30        Khaki Pants       89.00           1        89.00
-#113  2019-04-30  Button-Down Shirt       65.05           3       195.15
-#114  2019-04-30   Vintage Logo Tee       15.95           3        47.85
-
-#print(type(cur_sales))  # > <class 'pandas.core.frame.DataFrame'>
-
-month_prod_sales=master_data.groupby(['yearmon','product']).sum()
-print(month_prod_sales)
-print(month_prod_sales.index)
-
-month_total_sales = master_data.groupby(['yearmon']).sum()
-print(month_total_sales)
-
-breakpoint()
-
-cur_total_sales=month_total_sales['sales price'].loc[cur_ym]
-#print(cur_total_sales)
-cur_prod_sales = cur_sales.groupby(['product']).sum()
-#print(cur_prod_sales)
-cur_prod_sales=cur_prod_sales.sort_values(by=['sales price'],ascending=False)
-#print(cur_prod_sales)
 
 
 print('-----------------------')
