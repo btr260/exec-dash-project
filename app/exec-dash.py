@@ -99,6 +99,30 @@ def validate(user_input,ref_list):
     else:
         return "no match"
 
+def prev_year(user_month,user_year,min_date):
+    if user_month=="01":
+        m_end="12"
+        y_end=str(int(user_year)-1)
+    else:
+        y_end=user_year
+        if int(user_month)<=10:
+            m_end="0"+str(int(user_month)-1)
+        else:
+            m_end=str(int(user_month)-1)
+    m_st=user_month
+    y_st=str(int(user_year)-1)
+
+    comp_str=y_st+m_st
+    comp_int=int(comp_str)
+    repl_int=max(int(min_date),comp_int)
+    repl_str=str(repl_int)
+
+    if repl_str!=comp_str:
+        m_st=repl_str[0:4]
+        y_st=repl_str[-2:]
+
+    return [m_st,y_st,m_end,y_end]
+
 #CODE
 
 #Create list of files
@@ -229,9 +253,14 @@ else:
 cur_month = my_input[:my_input.find(' ')]
 cur_year=my_input[-4:]
 cur_ym = cur_year + month_num(cur_month)
-cur_ym_num=int(cur_ym)
+cur_month_int=int(month_num(cur_month))
 cur_year_int=int(cur_year)
-cur_month_int=int(cur_month)
+cur_ym_int=int(cur_ym)
+
+ytm=prev_year(month_num(cur_month),cur_year,data_pds[0])
+print(ytm)
+
+breakpoint()
 
 #cur_csvname = f'sales-{cur_ym}.csv'
 #cur_filepath = os.path.join(data_filepath, cur_csvname)
