@@ -61,6 +61,43 @@ def month_num(month):
     else:
         return '12'
 
+def rev_month_num(mnum):
+    if mnum == '01':
+        return 'January'
+    elif mnum == '02':
+        return 'February'
+    elif mnum == '03':
+        return 'March'
+    elif mnum == '04':
+        return 'April'
+    elif mnum == '05':
+        return 'May'
+    elif mnum == '06':
+        return 'June'
+    elif mnum == '07':
+        return 'July'
+    elif mnum == '08':
+        return 'August'
+    elif mnum == '09':
+        return 'September'
+    elif mnum == '10':
+        return 'October'
+    elif mnum == '11':
+        return 'November'
+    else:
+        return 'December'
+
+def validate(user_input,ref_list):
+    store=0
+    for item in ref_list:
+        if item==user_input:
+            store+=1
+    if store>0:
+        return "match"
+    elif user_input=="exit":
+        return "exit"
+    else:
+        return "no match"
 
 #CODE
 
@@ -94,7 +131,9 @@ for dfile in data_files:
 master_data['year']=master_data['date'].str.split('-').str[0]
 master_data['month'] = master_data['date'].str.split('-').str[1]
 master_data['yearmon']=master_data['year']+master_data['month']
-#print(master_data)
+master_data['yearmon num']=pd.to_numeric(master_data['yearmon'])
+
+
 #date            product  unit price  ...  sales price  year  month
 #0     2019-04-01        Khaki Pants       89.00  ...        89.00  2019      4
 #1     2019-04-01  Button-Down Shirt       65.05  ...        65.05  2019      4
@@ -152,6 +191,42 @@ master_data['yearmon']=master_data['year']+master_data['month']
 
 
 #TODO: FILE SELECTION
+
+print('----------------')
+print('Available Reporting Months:')
+print('----------------')
+data_pds=[x.replace('sales-','') for x in data_files]
+data_pds=[x.replace('.csv','') for x in data_pds]
+data_pds=sorted(data_pds)
+str_pds=[f"{rev_month_num(m[-2:])} {m[0:4]}" for m in data_pds]
+
+for m in str_pds:
+    print(m)
+
+#print list of months
+
+my_input=input("Please enter month and year of sales report (example: February 2019) or enter 'exit' to exit the program: ")
+
+while validate(my_input,str_pds)=="no match":
+    print('-------------------------')
+    print('-------------------------')
+    print('Your entry did not match a period with existing data.')
+    print('Please review the available reporting months, confirm\nspelling, and use full month name and year separated by a space.')
+    print('-------------------------')
+    print('-------------------------')
+    for m in str_pds:
+        print(m)
+    my_input = input("Please enter month and year of sales report (example: February 2019): ")
+
+if validate(my_input,str_pds)=="exit":
+    exit()
+
+else:
+    print('-------------------------')
+    print('Thank you for your entry.\nGenerating sales report now...')
+    print('-------------------------')
+
+breakpoint()
 
 cur_month = input("Please input month (e.g. 'February'): ")
 num_year=input("Please input year (e.g. 2019): ")
