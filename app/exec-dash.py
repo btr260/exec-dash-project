@@ -1,6 +1,6 @@
 ##Exec Dashboard Project
 
-#PACKAGES
+# PACKAGES and MODULES----------------------------------------------------------
 
 import os
 import operator
@@ -11,11 +11,7 @@ import PySimpleGUI as sg
 
 
 
-#DATA
-
-
-
-#FUNCTIONS
+# FUNCTIONS----------------------------------------------------------------------
 
 def to_usd(my_price):
     '''
@@ -123,9 +119,10 @@ def prev_year(user_month,user_year,min_date):
 
     return [m_st,y_st,m_end,y_end]
 
-#CODE
 
-#Create list of files
+# DATA---------------------------------------------------------------------------
+
+# Create list of files
 data_filepath = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'data')
 data_files = os.listdir(data_filepath)
 #print(data_files)
@@ -133,53 +130,16 @@ data_files = os.listdir(data_filepath)
 #initialize dataframe
 master_data = pd.DataFrame()
 
-#import all data
+# import all data
 for dfile in data_files:
     temp = pd.read_csv(os.path.join(data_filepath, dfile))
     master_data=temp.append(master_data,ignore_index=True) # https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.append.html
 
-#print(master_data)
-#date            product  unit price  units sold  sales price
-#0     2019-04-01        Khaki Pants       89.00           1        89.00
-#1     2019-04-01  Button-Down Shirt       65.05           1        65.05
-#2     2019-04-01   Vintage Logo Tee       15.95           2        31.90
-#3     2019-04-01       Sticker Pack        4.50           1         4.50
-#4     2019-04-02        Khaki Pants       89.00           1        89.00
-#...          ...                ...         ...         ...          ...
-#2342  2017-10-30        Khaki Pants       89.00           1        89.00
-#2343  2017-10-30  Button-Down Shirt       65.05           4       260.20
-#2344  2017-10-30   Vintage Logo Tee       15.95           1        15.95
-#2345  2017-10-30       Sticker Pack        4.50           3        13.50
-#2346  2017-10-31       Sticker Pack        4.50           2         9.00
 
 master_data['year']=master_data['date'].str.split('-').str[0]
 master_data['month'] = master_data['date'].str.split('-').str[1]
 master_data['yearmon']=master_data['year']+master_data['month']
 master_data['yearmon num']=pd.to_numeric(master_data['yearmon'])
-
-
-#date            product  unit price  ...  sales price  year  month
-#0     2019-04-01        Khaki Pants       89.00  ...        89.00  2019      4
-#1     2019-04-01  Button-Down Shirt       65.05  ...        65.05  2019      4
-#2     2019-04-01   Vintage Logo Tee       15.95  ...        31.90  2019      4
-#3     2019-04-01       Sticker Pack        4.50  ...         4.50  2019      4
-#4     2019-04-02        Khaki Pants       89.00  ...        89.00  2019      4
-#...          ...                ...         ...  ...          ...   ...    ...
-#2342  2017-10-30        Khaki Pants       89.00  ...        89.00  2017     10
-#2343  2017-10-30  Button-Down Shirt       65.05  ...       260.20  2017     10
-#2344  2017-10-30   Vintage Logo Tee       15.95  ...        15.95  2017     10
-#2345  2017-10-30       Sticker Pack        4.50  ...        13.50  2017     10
-#2346  2017-10-31       Sticker Pack        4.50  ...         9.00  2017     10
-
-#print(master_data.dtypes)
-#date            object
-#product         object
-#unit price     float64
-#units sold       int64
-#sales price    float64
-#year             int16
-#month             int8
-
 
 
 #sg.ChangeLookAndFeel("GreenTan")
@@ -214,7 +174,7 @@ master_data['yearmon num']=pd.to_numeric(master_data['yearmon'])
 
 
 
-#TODO: FILE SELECTION
+# List reporting periods
 
 print('----------------')
 print('Available Reporting Months:')
@@ -227,7 +187,7 @@ str_pds=[f"{rev_month_num(m[-2:])} {m[0:4]}" for m in data_pds]
 for m in str_pds:
     print(m)
 
-#print list of months
+# Ask for user input
 
 my_input=input("Please enter month and year of sales report (example: February 2019) or enter 'exit' to exit the program: ")
 
@@ -260,16 +220,13 @@ cur_ym_int=int(cur_ym)
 ltm=prev_year(month_num(cur_month),cur_year,data_pds[0])
 print(ltm)
 
-#cur_csvname = f'sales-{cur_ym}.csv'
-#cur_filepath = os.path.join(data_filepath, cur_csvname)
-#print(cur_filepath)
-#print(os.path.isfile(cur_filepath))
 
-#Subset master data for current month and previous twelve months
+# Subset master data for current month and previous twelve months
 cur_month_sales=master_data[master_data['yearmon']==cur_ym]
 
 ltm_sales = master_data[(master_data['yearmon num'] <= int(ltm[3]+ltm[2])) & (master_data['yearmon num'] >= int(ltm[1]+ltm[0]))]
 
+prev_sales=master_data[master_data['yearmon num']<=cur_ym_int]
 
 #print(cur_month_sales)
 #print(ltm_month_sales)
@@ -298,6 +255,12 @@ ltm_prod_sales=ltm_sales.groupby(['yearmon','product'])['sales price'].sum()
 ltm_avg_prod_sales=ltm_prod_sales.groupby(level='product').mean()
 ltm_avg_prod_sales = ltm_avg_prod_sales.sort_values(ascending=False)
 #print(ltm_avg_prod_sales)
+
+# Full Time Series Total Sales
+
+prev_total_sales = prev_sales.groupby('yearmon')['sales price'].sum()
+#print('ltm total sales')
+#print(ltm_total_sales)
 
 
 print('-----------------------')
@@ -348,5 +311,55 @@ for tick in ax.get_yticklabels():
     tick.set_fontname('times new roman')
 
 plt.title(f"Monthly Sales by Product\n{cur_month} {cur_year}",fontname='times new roman', fontweight='bold', fontsize='16')
+
+plt.show()
+
+# Time Series Chart Total Sales
+
+fig, ax = plt.subplots(figsize=(15, 10))
+
+chtax = list(prev_total_sales.index)
+fixax = [f"{x[:4]}-{x[-2:]}" for x in chtax]
+#print(fixax)
+ltm_pds = min(12, len(prev_total_sales) - 1)
+prior_txt = f"Average of Prior {ltm_pds} Months: {to_usd(ltm_avg_sales)}"
+
+if ltm_pds == 1:
+    tot_fn = f"Current reporting month shown in green.  Prior {ltm_pds} month is shown in orange."
+    prior_txt=f"Last Month: {to_usd(ltm_avg_sales)}"
+elif ltm_pds == 0:
+    tot_fn = f"Current reporting month shown in green (there are no prior months with available data)."
+    prior_txt = ""
+elif ltm_pds <= 12:
+    tot_fn = f"Current reporting month shown in green.  Prior {ltm_pds} months are shown in orange."
+else:
+    tot_fn = f"Current reporting month shown in green.  Prior {ltm_pds} months are shown in orange.  Earlier months are shown in blue."
+
+
+barlist = plt.bar(fixax, prev_total_sales, align='center')
+
+plt.xlabel(f"Month\n\n{tot_fn}", fontname='times new roman',
+           fontweight='bold', fontsize='12', horizontalalignment='center')
+
+plt.ylabel("Total Sales ($)", fontname='times new roman', fontweight='bold',
+           fontsize='12', verticalalignment='center')
+
+ax.get_yaxis().set_major_formatter(
+    tck.FuncFormatter(lambda y, p: format(int(y), ',')))
+
+for tick in ax.get_xticklabels():
+    tick.set_fontname('times new roman')
+
+for tick in ax.get_yticklabels():
+    tick.set_fontname('times new roman')
+
+plt.title(f"Total Sales Report\n\n{cur_month} {cur_year}: {to_usd(cur_total_sales)}\n{prior_txt}",
+          fontname='times new roman', fontweight='bold', fontsize='14')
+
+barlist[-1].set_color('g')
+for x in range(2, 2 + ltm_pds):
+    barlist[-x].set_color('orange')
+
+
 
 plt.show()
