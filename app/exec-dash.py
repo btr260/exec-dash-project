@@ -90,7 +90,7 @@ def validate(user_input,ref_list):
             store+=1
     if store>0:
         return "match"
-    elif user_input=="exit":
+    elif user_input=="Exit":
         return "exit"
     else:
         return "no match"
@@ -189,7 +189,8 @@ for m in str_pds:
 
 # Ask for user input
 
-my_input=input("Please enter month and year of sales report (example: February 2019) or enter 'exit' to exit the program: ")
+my_input=input("Please enter month and year of sales report (example: February 2019) or enter 'Exit' to exit the program: ")
+my_input=my_input.title()
 
 while validate(my_input,str_pds)=="no match":
     print('-------------------------')
@@ -263,14 +264,70 @@ prev_total_sales = prev_sales.groupby('yearmon')['sales price'].sum()
 #print(ltm_total_sales)
 
 
-print('-----------------------')
-print(f'MONTH: {cur_month} {cur_year}')
+#print('-----------------------')
+#print(f'MONTH: {cur_month} {cur_year}')
+#
+#print('-----------------------')
+#print('CRUNCHING THE DATA...')
+#
+#print('-----------------------')
+#print(f'TOTAL MONTHLY SALES: {to_usd(cur_total_sales)}')
 
-print('-----------------------')
-print('CRUNCHING THE DATA...')
+# Time Series Chart Total Sales
 
-print('-----------------------')
-print(f'TOTAL MONTHLY SALES: {to_usd(cur_total_sales)}')
+fig, ax = plt.subplots()
+
+chtax = list(prev_total_sales.index)
+fixax = [f"{x[:4]}-{x[-2:]}" for x in chtax]
+#print(fixax)
+ltm_pds = min(12, len(prev_total_sales) - 1)
+prior_txt = f"Average of Prior {ltm_pds} Months: {to_usd(ltm_avg_sales)}"
+
+if len(prev_total_sales) == 2:
+    tot_fn = f"Current reporting month shown in green.  Prior {ltm_pds} month is shown in orange."
+    prior_txt=f"Last Month: {to_usd(ltm_avg_sales)}"
+elif len(prev_total_sales) == 1:
+    tot_fn = f"Current reporting month shown in green (there are no prior months with available data)."
+    prior_txt = ""
+elif len(prev_total_sales) <= 13:
+    tot_fn = f"Current reporting month shown in green.  Prior {ltm_pds} months are shown in orange."
+else:
+    tot_fn = f"Current reporting month shown in green.  Prior {ltm_pds} months are shown in orange.  Earlier months are shown in blue."
+
+
+barlist = plt.bar(fixax, prev_total_sales, align='center')
+
+plt.xlabel(f"Month\n\n{tot_fn} Close to see sales by product.", fontname='times new roman',
+           fontweight='bold', fontsize='12', horizontalalignment='center')
+
+plt.ylabel("Total Sales ($)", fontname='times new roman', fontweight='bold',
+           fontsize='12', verticalalignment='center')
+
+ax.get_yaxis().set_major_formatter(
+    tck.FuncFormatter(lambda y, p: format(int(y), ',')))
+
+for tick in ax.get_xticklabels():
+    tick.set_fontname('times new roman')
+
+for tick in ax.get_yticklabels():
+    tick.set_fontname('times new roman')
+
+plt.title(f"Total Sales Report\n\n{cur_month} {cur_year}: {to_usd(cur_total_sales)}\n{prior_txt}",
+          fontname='times new roman', fontweight='bold', fontsize='14')
+
+barlist[-1].set_color('g')
+for x in range(2, 2 + ltm_pds):
+    barlist[-x].set_color('orange')
+
+
+
+plt.show()
+
+
+
+
+
+
 
 user_top = 3 #TODO: let user specify number of products
 
@@ -287,7 +344,7 @@ for i, rows in cur_prod_sales.iteritems():
 print('-----------------------')
 print('VISUALIZING THE DATA...')
 
-fig, ax = plt.subplots(figsize=(15,5))
+fig, ax = plt.subplots()
 
 plt.barh(cur_prod_sales.index, cur_prod_sales, align='center')
 
@@ -311,55 +368,5 @@ for tick in ax.get_yticklabels():
     tick.set_fontname('times new roman')
 
 plt.title(f"Monthly Sales by Product\n{cur_month} {cur_year}",fontname='times new roman', fontweight='bold', fontsize='16')
-
-plt.show()
-
-# Time Series Chart Total Sales
-
-fig, ax = plt.subplots(figsize=(15, 10))
-
-chtax = list(prev_total_sales.index)
-fixax = [f"{x[:4]}-{x[-2:]}" for x in chtax]
-#print(fixax)
-ltm_pds = min(12, len(prev_total_sales) - 1)
-prior_txt = f"Average of Prior {ltm_pds} Months: {to_usd(ltm_avg_sales)}"
-
-if ltm_pds == 1:
-    tot_fn = f"Current reporting month shown in green.  Prior {ltm_pds} month is shown in orange."
-    prior_txt=f"Last Month: {to_usd(ltm_avg_sales)}"
-elif ltm_pds == 0:
-    tot_fn = f"Current reporting month shown in green (there are no prior months with available data)."
-    prior_txt = ""
-elif ltm_pds <= 12:
-    tot_fn = f"Current reporting month shown in green.  Prior {ltm_pds} months are shown in orange."
-else:
-    tot_fn = f"Current reporting month shown in green.  Prior {ltm_pds} months are shown in orange.  Earlier months are shown in blue."
-
-
-barlist = plt.bar(fixax, prev_total_sales, align='center')
-
-plt.xlabel(f"Month\n\n{tot_fn}", fontname='times new roman',
-           fontweight='bold', fontsize='12', horizontalalignment='center')
-
-plt.ylabel("Total Sales ($)", fontname='times new roman', fontweight='bold',
-           fontsize='12', verticalalignment='center')
-
-ax.get_yaxis().set_major_formatter(
-    tck.FuncFormatter(lambda y, p: format(int(y), ',')))
-
-for tick in ax.get_xticklabels():
-    tick.set_fontname('times new roman')
-
-for tick in ax.get_yticklabels():
-    tick.set_fontname('times new roman')
-
-plt.title(f"Total Sales Report\n\n{cur_month} {cur_year}: {to_usd(cur_total_sales)}\n{prior_txt}",
-          fontname='times new roman', fontweight='bold', fontsize='14')
-
-barlist[-1].set_color('g')
-for x in range(2, 2 + ltm_pds):
-    barlist[-x].set_color('orange')
-
-
 
 plt.show()
