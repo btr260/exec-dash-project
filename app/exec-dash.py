@@ -328,7 +328,6 @@ plt.show()
 
 
 
-
 user_top = 3 #TODO: let user specify number of products
 
 print('-----------------------')
