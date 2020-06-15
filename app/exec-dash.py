@@ -7,7 +7,6 @@ import operator
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.ticker as tck
-import PySimpleGUI as sg
 
 
 
@@ -27,7 +26,7 @@ def to_usd(my_price):
 
 def month_num(month):
     '''
-    Converts a full month name to numeric string for file recognition.
+    Converts a full month name to numeric string.
     Param: month (string) like February
     Example: month_num('February')
     Returns: '02'
@@ -58,6 +57,12 @@ def month_num(month):
         return '12'
 
 def rev_month_num(mnum):
+    '''
+    Converts a numeric month string to full month name.
+    Param: month number (string) like 02
+    Example: month_num('02')
+    Returns: 'February'
+    '''
     if mnum == '01':
         return 'January'
     elif mnum == '02':
@@ -83,7 +88,10 @@ def rev_month_num(mnum):
     else:
         return 'December'
 
-def validate(user_input,ref_list):
+def validate(user_input, ref_list):
+    '''
+    Validates user inputs
+    '''
     store=0
     for item in ref_list:
         if item==user_input:
@@ -95,7 +103,10 @@ def validate(user_input,ref_list):
     else:
         return "no match"
 
-def prev_year(user_month,user_year,min_date):
+def prev_year(user_month, user_year, min_date):
+    '''
+    Defines period of up to 12 months prior to month of user input)
+    '''
     if user_month=="01":
         m_end="12"
         y_end=str(int(user_year)-1)
@@ -142,38 +153,6 @@ master_data['yearmon']=master_data['year']+master_data['month']
 master_data['yearmon num']=pd.to_numeric(master_data['yearmon'])
 
 
-#sg.ChangeLookAndFeel("GreenTan")
-#
-#layout = [
-#    [sg.Text("Welcome to your monthly sales report!",
-#             size=(30, 1), font=("Helvetica", 25))],
-#    [sg.Text("Please select the month of interest:")],
-#    #[sg.InputText("This is my text")],
-#    #[sg.Checkbox("My first checkbox!"), sg.Checkbox(
-#    #    "My second checkbox!", default=True)],
-#    #[sg.Radio("My first Radio!     ", "RADIO1", default=True),
-#    # sg.Radio("My second Radio!", "RADIO1")],
-#    #[sg.Multiline(default_text="This is the default Text should you decide not to type anything", size=(35, 3)),
-#    # sg.Multiline(default_text="A second multi-line", size=(35, 3))],
-#    #[sg.InputCombo(("Combobox 1", "Combobox 2"), size=(20, 3)),
-#    # sg.Slider(range=(1, 100), orientation="h", size=(34, 20), default_value=85)],
-#    [sg.Listbox(values=("Listbox 1", "Listbox 2", "Listbox 3"), size=(30, 3))],
-#    [sg.Text("_" * 80)],
-#    #[sg.Text("Choose A Folder", size=(35, 1))],
-#    #[sg.Text("Your Folder", size=(15, 1), auto_size_text=False, justification="right"),
-#    # sg.InputText("Default Folder"), sg.FolderBrowse()],
-#    [sg.Submit(), sg.Cancel()]
-#]
-#
-#window = sg.Window("Monthly sales report",
-#                   default_element_size=(40, 1)).Layout(layout)
-#button, values = window.Read()
-#sg.Popup(button, values)
-
-
-
-
-
 # List reporting periods
 
 print('----------------')
@@ -202,6 +181,7 @@ while validate(my_input,str_pds)=="no match":
     for m in str_pds:
         print(m)
     my_input = input("Please enter month and year of sales report (example: February 2019): ")
+    my_input=my_input.title()
 
 if validate(my_input,str_pds)=="exit":
     exit()
@@ -219,7 +199,7 @@ cur_year_int=int(cur_year)
 cur_ym_int=int(cur_ym)
 
 ltm=prev_year(month_num(cur_month),cur_year,data_pds[0])
-print(ltm)
+#print(ltm)
 
 
 # Subset master data for current month and previous twelve months
@@ -239,7 +219,7 @@ cur_total_sales=cur_month_sales['sales price'].sum()
 cur_prod_sales = cur_month_sales.groupby('product')['sales price'].sum()
 cur_prod_sales=cur_prod_sales.sort_values(ascending=False)
 #print('current prod sales')
-print(cur_prod_sales)
+#print(cur_prod_sales)
 
 ltm_total_sales = ltm_sales.groupby('yearmon')['sales price'].sum()
 #print('ltm total sales')
@@ -264,16 +244,31 @@ prev_total_sales = prev_sales.groupby('yearmon')['sales price'].sum()
 #print(ltm_total_sales)
 
 
-#print('-----------------------')
-#print(f'MONTH: {cur_month} {cur_year}')
+print('-----------------------')
+print(f'MONTH: {cur_month} {cur_year}')
 #
-#print('-----------------------')
-#print('CRUNCHING THE DATA...')
+print('-----------------------')
+print('CRUNCHING THE DATA...')
 #
-#print('-----------------------')
-#print(f'TOTAL MONTHLY SALES: {to_usd(cur_total_sales)}')
+print('-----------------------')
+print(f'TOTAL MONTHLY SALES: {to_usd(cur_total_sales)}')
 
-# Time Series Chart Total Sales
+user_top = 3  # TODO: let user specify number of products
+
+print('-----------------------')
+print(f"TOP {user_top} SELLING PRODUCTS:")
+
+rank = 0
+for i, rows in cur_prod_sales.iteritems():
+    rank += 1
+    if rank <= user_top:
+        print(f"  {rank}) {i}: {to_usd(rows)}")
+
+
+print('-----------------------')
+print('VISUALIZING THE DATA...')
+
+# TOTAL SALES BY MONTH TIME SERIES BAR CHART
 
 fig, ax = plt.subplots()
 
@@ -304,7 +299,7 @@ plt.ylabel("Total Sales ($)", fontname='times new roman', fontweight='bold',
            fontsize='12', verticalalignment='center')
 
 ax.get_yaxis().set_major_formatter(
-    tck.FuncFormatter(lambda y, p: format(int(y), ',')))
+    tck.FuncFormatter(lambda y, p: to_usd(int(y))))
 
 for tick in ax.get_xticklabels():
     tick.set_fontname('times new roman')
@@ -312,7 +307,7 @@ for tick in ax.get_xticklabels():
 for tick in ax.get_yticklabels():
     tick.set_fontname('times new roman')
 
-plt.title(f"Total Sales Report\n\n{cur_month} {cur_year}: {to_usd(cur_total_sales)}\n{prior_txt}",
+plt.title(f"Total Monthly Sales\n\n{cur_month} {cur_year}: {to_usd(cur_total_sales)}\n{prior_txt}",
           fontname='times new roman', fontweight='bold', fontsize='14')
 
 barlist[-1].set_color('g')
@@ -324,24 +319,7 @@ for x in range(2, 2 + ltm_pds):
 plt.show()
 
 
-
-
-
-
-user_top = 3 #TODO: let user specify number of products
-
-print('-----------------------')
-print(f"TOP {user_top} SELLING PRODUCTS:")
-
-rank=0
-for i, rows in cur_prod_sales.iteritems():
-    rank+=1
-    if rank <= user_top:
-        print(f"  {rank}) {i}: {to_usd(rows)}")
-
-
-print('-----------------------')
-print('VISUALIZING THE DATA...')
+# SALES BY PRODUCT BAR CHART
 
 fig, ax = plt.subplots()
 
@@ -357,7 +335,7 @@ plt.ylabel("Product", fontname='times new roman', fontweight='bold',fontsize='12
 plt.grid(which='major',axis='x',linestyle="--")
 
 #Source for axis label formatting: https://stackoverflow.com/questions/25973581/how-do-i-format-axis-number-format-to-thousands-with-a-comma-in-matplotlib
-ax.get_xaxis().set_major_formatter(tck.FuncFormatter(lambda x, p: format(int(x), ',')))
+ax.get_xaxis().set_major_formatter(tck.FuncFormatter(lambda x, p: to_usd(int(x))))
 
 #Source for tick formatting: http://jonathansoma.com/lede/data-studio/matplotlib/changing-fonts-in-matplotlib/
 for tick in ax.get_xticklabels():
@@ -365,6 +343,9 @@ for tick in ax.get_xticklabels():
 
 for tick in ax.get_yticklabels():
     tick.set_fontname('times new roman')
+
+for i in ax.patches:
+    ax.text(i.get_width(), i.get_y()+.5, to_usd(i.get_width()), fontname='times new roman', fontweight='bold', fontsize='12')
 
 plt.title(f"Monthly Sales by Product\n{cur_month} {cur_year}",fontname='times new roman', fontweight='bold', fontsize='16')
 
